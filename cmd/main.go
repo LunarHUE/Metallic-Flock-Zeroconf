@@ -12,7 +12,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/betamos/zeroconf"
+	"github.com/lunarhue/flock-zeroconf"
 )
 
 var (

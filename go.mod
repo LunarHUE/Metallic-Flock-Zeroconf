@@ -1,4 +1,4 @@
-module github.com/betamos/zeroconf
+module github.com/lunarhue/flock-zeroconf
 
 go 1.22.0
 

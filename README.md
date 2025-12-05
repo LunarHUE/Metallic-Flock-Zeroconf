@@ -1,7 +1,7 @@
 # Zeroconf Service Discovery
 
-[![GoDoc](https://godoc.org/github.com/betamos/zeroconf?status.svg)](https://godoc.org/github.com/betamos/zeroconf)
-[![Tests](https://github.com/betamos/zeroconf/actions/workflows/go-test.yml/badge.svg)](https://github.com/betamos/zeroconf/actions/workflows/go-test.yml)
+[![GoDoc](https://godoc.org/github.com/lunarhue/flock-zeroconf?status.svg)](https://godoc.org/github.com/lunarhue/flock-zeroconf)
+[![Tests](https://github.com/lunarhue/flock-zeroconf/actions/workflows/go-test.yml/badge.svg)](https://github.com/lunarhue/flock-zeroconf/actions/workflows/go-test.yml)
 
 Zeroconf is a pure Golang library for discovering and publishing services on the local network.
 
@@ -30,13 +30,13 @@ addresses from all interfaces.
 First, let's install the library:
 
 ```bash
-$ go get -u github.com/betamos/zeroconf
+$ go get -u github.com/lunarhue/flock-zeroconf
 ```
 
 Then, let's import the library and define a service type:
 
 ```go
-import "github.com/betamos/zeroconf"
+import "github.com/lunarhue/flock-zeroconf"
 
 var chat = zeroconf.NewType("_chat._tcp")
 ```
@@ -118,4 +118,4 @@ However, archeologists will find a noble lineage of honorable predecessors:
 -   [oleksandr/bonjour](https://github.com/oleksandr/bonjour)
 -   [grandcat/zeroconf](https://github.com/grandcat/zeroconf)
 -   [libp2p/zeroconf](https://github.com/libp2p/zeroconf)
--   [betamos/zeroconf](https://github.com/betamos/zeroconf) ← You are here
+-   [betamos/zeroconf](https://github.com/lunarhue/flock-zeroconf) ← You are here
