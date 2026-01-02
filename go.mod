@@ -1,4 +1,4 @@
-module github.com/lunarhue/compute-flock-zeroconf
+module github.com/lunarhue/metallic-flock-zeroconf
 
 go 1.22.0
 
