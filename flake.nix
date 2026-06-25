@@ -15,11 +15,6 @@
             config.allowUnfree = true;
           };
 
-          metallicFlock = pkgs.callPackage ./apps/metallic-flock/package.nix {
-            workspaceRoot = ./.;
-            gitCommit = self.shortRev or self.dirtyShortRev or "unknown";
-          };
-
           # Toolchain shared by local dev and CI.
           corePackages = with pkgs; [
             # Golang tooling
@@ -53,15 +48,8 @@
             opencode
           ];
         in {
-          packages = rec {
-            metallic-flock = metallicFlock;
-            default = metallic-flock;
-          };
-
           devShells = {
             default = pkgs.mkShell {
-              inputsFrom = [ metallicFlock ];
-
               packages = corePackages ++ devOnlyPackages;
 
               BASH_COMPLETION_PATH =
@@ -73,43 +61,11 @@
             };
 
             ci = pkgs.mkShell {
-              inputsFrom = [ metallicFlock ];
-
               packages = corePackages;
             };
           };
         }))
       {
-        nixosModules = rec {
-          metallic-flock = import ./apps/metallic-flock/system.nix {
-            inherit self;
-          };
-
-          default = metallic-flock;
-        };
-
-        packages.x86_64-linux.metallic-image =
-          let
-            system = "x86_64-linux";
-            releaseRef = import ./apps/metallic-image/release-ref.nix;
-          in
-          (nixpkgs.lib.nixosSystem {
-            inherit system;
-
-            specialArgs = {
-              metallic-flock-pkg = self.packages.${system}.metallic-flock;
-              clusterConfig = import ./apps/metallic-image/default-config.nix;
-              inherit releaseRef;
-            };
-
-            modules = [
-              {
-                nixpkgs.config.allowUnfree = true;
-              }
-
-              self.nixosModules.metallic-flock
-              ./apps/metallic-image/image.nix
-            ];
-          }).config.system.build.isoImage;
+        
       };
 }
