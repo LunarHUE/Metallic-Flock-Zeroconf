@@ -1,6 +1,8 @@
 package zeroconf
 
 import (
+	"context"
+	"fmt"
 	"net"
 	"runtime"
 	"time"
@@ -42,11 +44,17 @@ type conn4 struct {
 var _ connx = &conn4{}
 
 func newConn4() (c *conn4, err error) {
-	// IPv4 interfaces
-
-	udpConn, err := net.ListenUDP("udp4", ipv4Addr)
+	// IPv4 interfaces. SO_REUSEADDR/SO_REUSEPORT let us share port 5353 with
+	// other mDNS responders (e.g. avahi-daemon), RFC 6762 section 15.1.
+	lc := net.ListenConfig{Control: reuseControl}
+	pktConn, err := lc.ListenPacket(context.Background(), "udp4", ipv4Addr.String())
 	if err != nil {
 		return nil, err
+	}
+	udpConn, ok := pktConn.(*net.UDPConn)
+	if !ok {
+		pktConn.Close()
+		return nil, fmt.Errorf("expected *net.UDPConn, got %T", pktConn)
 	}
 	pc := ipv4.NewPacketConn(udpConn)
 	_ = pc.SetControlMessage(ipv4.FlagInterface, true)
@@ -95,10 +103,17 @@ type conn6 struct {
 var _ connx = &conn6{}
 
 func newConn6() (c *conn6, err error) {
-	// TODO: Use `REUSEPORT`, RFC 6762 section 15.1.
-	udpConn, err := net.ListenUDP("udp6", ipv6Addr)
+	// SO_REUSEADDR/SO_REUSEPORT let us share port 5353 with other mDNS
+	// responders (e.g. avahi-daemon), RFC 6762 section 15.1.
+	lc := net.ListenConfig{Control: reuseControl}
+	pktConn, err := lc.ListenPacket(context.Background(), "udp6", ipv6Addr.String())
 	if err != nil {
 		return nil, err
+	}
+	udpConn, ok := pktConn.(*net.UDPConn)
+	if !ok {
+		pktConn.Close()
+		return nil, fmt.Errorf("expected *net.UDPConn, got %T", pktConn)
 	}
 	pc := ipv6.NewPacketConn(udpConn)
 	_ = pc.SetControlMessage(ipv6.FlagInterface, true)
